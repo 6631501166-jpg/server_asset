@@ -1,0 +1,111 @@
+PRAGMA foreign_keys = ON;
+
+-- ===================== USERS =====================
+CREATE TABLE IF NOT EXISTS users (
+  uid INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT,
+  ph_num TEXT,
+  username TEXT NOT NULL UNIQUE,
+  profile_img TEXT DEFAULT 'default.png',
+  role TEXT CHECK(role IN ('student','admin','lecturer')) DEFAULT 'student',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (uid, email, password, first_name, last_name, ph_num, username, profile_img, role, created_at) VALUES
+(1, 'admin@example.com', '$argon2id$v=19$m=19456,t=2,p=1$w1Gwh8JM0JNpRUy+gn+O2A$qzv+7U24N9NALH4v7Fy71aS/C+ohQ6T110WfkhqX7h0', 'Admin', 'User', NULL, 'admin', 'default.png', 'admin', '2025-11-05 15:38:57'),
+(2, 'john.doe@example.com', '$argon2id$v=19$m=19456,t=2,p=1$vgPooYtzWM6/fq/VgdT+iQ$Wt9Kuj/XoSOU+JTiUf3TcMuKUwaBjpPQi7YFRTJ7IxU', 'John', 'Doe', '+1234567890', 'johndoe', 'default.png', 'student', '2025-11-05 15:39:57'),
+(3, 'test1762357273@example.com', '$argon2id$v=19$m=19456,t=2,p=1$UzW5ENvxbZOvej05ICj3Lg$X2pEook9YlU60A3rzKtAFkwsLEBI2lWYKXJj2hYXKDg', 'Test', 'User', NULL, 'testuser1762357273', 'default.png', 'student', '2025-11-05 15:41:13'),
+(4, 'iptest@example.com', '$argon2id$v=19$m=19456,t=2,p=1$v1t5K1IfvGHoQVMxcRwn5w$BhJCj1HDkxfo1V8olqQHeglmNDIW4Vi2ae1zGdtnKkg', 'IP', 'Test', NULL, 'iptest', 'default.png', 'student', '2025-11-05 15:47:34'),
+(5, 'swan2923@gmail.com', '$argon2id$v=19$m=19456,t=2,p=1$Z4qZRri1oR4mGonhSd/sEw$KEAzpZHpx0hF7RFmLqpa0RFrL3isEh4RAdmt5WvBq2Q', 'SWAN', 'HTET', '835087266', 'LouisCore', 'default.png', 'student', '2025-11-05 16:49:37'),
+(8, 'boomz181121@gmail.com', '$argon2id$v=19$m=19456,t=2,p=1$+/mLZiWrnYZVCrELBIaJJA$KoZb67yCRkKe9TGBIEjH2TldhDU5PcSuu4MSOKNNjjw', 'boom', 'z', '639850175', 'boomz', 'default.png', 'student', '2025-11-05 16:57:32'),
+(9, 'user@gmail.com', '$argon2id$v=19$m=19456,t=2,p=1$jTmh5C1RexUbyoy19gFJOA$8SA0+tQdAun//N+eArPlo1c55aKpjWzGd48aQHml/o8', 'Test', 'User', NULL, 'user', 'default.png', 'student', '2025-11-05 17:50:04'),
+(10, 'minmaung211200@gmail.com', '$argon2id$v=19$m=19456,t=2,p=1$e0knPlRbUdU3n2yjZ4J/Jw$PRne5kteYdfjGe4ODOS/DqG2KuAkJNZJiRmOW05aA8o', 'Min Maung', 'Maung', '0619328188', 'minmaung21', 'default.png', 'student', '2025-11-05 18:23:19'),
+(11, 'nickyoung21@gmail.com', '$argon2id$v=19$m=19456,t=2,p=1$fUl1AOkd9naOPqR0OKo/ZQ$1dIIaSwcAeanoGauf470V0d315AZDQAtTb+Pu0E3lKM', 'Nick', 'Young', '0123456789', 'nickyoung01', 'default.png', 'student', '2025-11-05 18:29:21');
+
+-- ===================== CATEGORY =====================
+CREATE TABLE IF NOT EXISTS category (
+  category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  image TEXT,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO category (category_id, name, image, is_active, created_at) VALUES
+(1, 'Macbook', 'macbook.png', 1, '2025-11-05 15:38:57'),
+(2, 'iPad', 'ipad.png', 1, '2025-11-05 15:38:57'),
+(3, 'Playstation', 'playstation.png', 1, '2025-11-05 15:38:57'),
+(4, 'VR Headset', 'vr.png', 1, '2025-11-05 15:38:57');
+
+-- ===================== ASSET =====================
+CREATE TABLE IF NOT EXISTS asset (
+  asset_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  asset_code TEXT NOT NULL UNIQUE,
+  asset_name TEXT NOT NULL,
+  category_id INTEGER NOT NULL,
+  status TEXT CHECK(status IN ('available','pending','borrowed','maintenance','disabled')) DEFAULT 'available',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES category(category_id)
+);
+
+INSERT INTO asset (asset_id, asset_code, asset_name, category_id, status, created_at) VALUES
+(7, 'Mac-1', 'Macbook Pro M1', 1, 'available', '2025-11-05 20:55:43'),
+(8, 'Mac-2', 'Macbook Pro', 1, 'available', '2025-11-05 20:55:43'),
+(9, 'Mac-4', 'Macbook Air M2', 1, 'pending', '2025-11-05 20:55:43'),
+(10, 'iPad-1', 'iPad Pro 12.9', 2, 'pending', '2025-11-05 20:55:43'),
+(11, 'iPad-2', 'iPad Air', 2, 'available', '2025-11-05 20:55:43'),
+(12, 'iPad-3', 'iPad Mini', 2, 'available', '2025-11-05 20:55:43'),
+(13, 'PS-1', 'PlayStation 5', 3, 'available', '2025-11-05 20:55:43'),
+(14, 'PS-2', 'PlayStation 5 Digital', 3, 'available', '2025-11-05 20:55:43'),
+(15, 'PS-3', 'PlayStation 4 Pro', 3, 'available', '2025-11-05 20:55:43'),
+(16, 'VR-1', 'Meta Quest 3', 4, 'available', '2025-11-05 20:55:43'),
+(17, 'VR-2', 'PlayStation VR2', 4, 'available', '2025-11-05 20:55:43'),
+(18, 'VR-3', 'HTC Vive Pro', 4, 'available', '2025-11-05 20:55:43'),
+(19, 'Mac-3', 'Macbook Pro', 1, 'maintenance', '2025-11-05 20:57:03');
+
+-- ===================== BORROWING =====================
+CREATE TABLE IF NOT EXISTS borrowing (
+  borrowing_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  borrower_id INTEGER NOT NULL,
+  asset_id INTEGER NOT NULL,
+  approver_id INTEGER,
+  status TEXT CHECK(status IN ('pending','approved','borrowed','returned','rejected','cancelled')) DEFAULT 'pending',
+  borrow_date DATE NOT NULL,
+  return_date DATE,
+  returned_at DATETIME,
+  approved_at DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (borrower_id) REFERENCES users(uid),
+  FOREIGN KEY (asset_id) REFERENCES asset(asset_id),
+  FOREIGN KEY (approver_id) REFERENCES users(uid)
+);
+
+INSERT INTO borrowing (borrowing_id, borrower_id, asset_id, approver_id, status, borrow_date, return_date, returned_at, approved_at, created_at) VALUES
+(5, 5, 9, NULL, 'pending', '2025-11-06', '2025-11-13', NULL, NULL, '2025-11-05 22:09:45'),
+(6, 9, 10, NULL, 'pending', '2025-11-06', '2025-11-13', NULL, NULL, '2025-11-05 22:13:20');
+
+-- ===================== LECTURER PROFILE =====================
+CREATE TABLE IF NOT EXISTS lecturer_profile (
+  lecturer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  uid INTEGER NOT NULL UNIQUE,
+  department TEXT,
+  position TEXT,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (uid) REFERENCES users(uid)
+);
+
+-- ===================== APPROVAL HISTORY =====================
+CREATE TABLE IF NOT EXISTS approval_history (
+  approval_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  borrowing_id INTEGER NOT NULL,
+  lecturer_id INTEGER NOT NULL,
+  action TEXT CHECK(action IN ('approved','rejected','cancelled')) NOT NULL,
+  action_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  comment TEXT,
+  FOREIGN KEY (borrowing_id) REFERENCES borrowing(borrowing_id),
+  FOREIGN KEY (lecturer_id) REFERENCES users(uid)
+);
